@@ -1,0 +1,101 @@
+ASPKA - A Small Position Keeping Application
+Welcome to ASPKA v. 0.1
+Written by: Marcus Johansson, Nov-2017
+
+|-------------------------------------|
+| REGISTERED FINANCIAL INSTRUMENTS    |
+|-------------------------------------|
+| Name | Currency | Issuer            |
+|-------------------------------------|
+| ABB  | SEK      | Asea Brown Boveri |
+| LME  | SEK      | LM Ericsson       |
+|-------------------------------------|
+
+|---------------------------------------------------------------------|
+| TRACK RECORD                                                        |
+|---------------------------------------------------------------------|
+| Instrument | Portfolio   | Price, Quant | Trade Time  | Buy/Sell    |
+|            | Aquirer     | Counterparty |             | Marketplace |
+|---------------------------------------------------------------------|
+| ABB        | My Stocks   | 11.45, 22    | 2017-09-11  | Buy         |
+|            | Equity Desk | Deutche Bank | 11:31:41.29 | OMX         |
+|---------------------------------------------------------------------|
+| ABB        | My Stocks   | 12.41, 12    | 2017-09-11  | Sell        |
+|            | Equity Desk | Deutche Bank | 11:31:45.39 | OMX         |
+|---------------------------------------------------------------------|
+
+|---------------------------------------------------------------------------------------------|
+| ALL CURRENT POSITIONS                                                                       |
+|---------------------------------------------------------------------------------------------|
+| Instrument | Portfolio | Aquirer     | Counterparty | Marketplace | Market Price | Position | (also Trend and dTrend for market simulation)
+|---------------------------------------------------------------------------------------------|
+| ABB        | My Stocks | Equity Desk | Deutche Bank | OMX         | 12.95        | 22       |
+| LME        | My Stocks | Equity Desk | Deutche Bank | OMX         | 12.95        | 22       |
+|---------------------------------------------------------------------------------------------|
+
+|------------------------------------------------------------------------------|
+| CURRENT POSITIONS   (Grouped on 'Counterparty')                              |
+|------------------------------------------------------------------------------|
+|   Instrument | Market Price | Curr | Pos | Market Value | Tot. Traded Amount | 
+|------------------------------------------------------------------------------|
+| Deutche Bank:                                                                |
+|   ABB        | 12.95        | SEK  | 12  | 155.40       |                    |
+|                                                                              |
+| Unicredit:                                                                   |
+|   ABB        | 12.95        | SEK  | 12  | 155.40       |                    |
+|   LME        | 14.58        | SEK  | 9   | 131.22       |                    |
+|------------------------------------------------------------------------------|
+
+> help
+Command     Argument       Description
+  help                     Displays this help information.
+
+  register  instrument     Registers a new financial instrument.
+  
+            trade          Registers a trade of an instrument.
+         
+  show      instrument     Shows all registered financial instruments.
+           
+            track_record   Shows all track records.
+         
+            positions      Shows all currently open positions grouped.
+
+  set       grouping       Sets which grouping to use for displaying positions:
+                           "portfolio", "aquirer", "counterparty", "marketplace"
+                           E.g. 'set grouping aquirer'
+  
+  quit                     Quits this program.
+         
+  - - -        
+         
+  view_positions           Shows all currently open positions. (FOR DEBUGGING)
+
+> register instrument
+Registering of a new financial instrument:
+Name: ABB
+Currency: SEK
+Issuer: Asea Brown Boveri
+
+Successfully registered new financial instrument!
+
+> register trade
+(Available instruments: ABB, LME)
+Instrument name: ABB
+Portfolio: My Stocks
+Aquirer: Equity Desk
+Counterpaty: Deutche Bank
+Marketplace: OMX
+(type '-' to set to current market price)
+Price: 11.45
+Quantity: 20
+Buy/Sell: Buy
+
+Successfully executed trade order!
+
+> set grouping portfolio
+Successfully set grouping to 'portfolio'-mode!
+
+
+
+
+
