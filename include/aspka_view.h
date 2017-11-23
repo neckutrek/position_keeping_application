@@ -1,13 +1,19 @@
 #ifndef ASPKA_VIEW_H
 #define ASPKA_VIEW_H
 
+#include "aspka_model.h"
+
+#include <memory>
+
 namespace aspka {
    
+   using std::shared_ptr;
+
    /** @brief 
     */
    class AspkaView {
    public:
-      AspkaView() = default;
+      AspkaView(shared_ptr<AspkaModel>);
       ~AspkaView() = default;
 
    private:
@@ -16,6 +22,7 @@ namespace aspka {
       AspkaView& operator=(const AspkaView&) = delete;
       AspkaView& operator=(AspkaView&&) = delete;
      
+      shared_ptr<AspkaModel> model_;
 
    };
 

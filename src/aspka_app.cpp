@@ -6,6 +6,8 @@ namespace aspka {
 
    using std::cin;
    using std::cout;
+   using std::make_unique;
+   using std::make_shared;
 
    AspkaApp::AspkaApp(int argc, char** argv) 
    : cmds_map_{
@@ -16,7 +18,10 @@ namespace aspka {
       {"show trades",         [this](){ showTrades(); } },
       {"show positions",      [this](){ showPositions(); } },
       {"set grouping",        [this](){ setGrouping(); } },
-      {"view_positions",      [this](){ viewPositions(); } } }
+      {"view_positions",      [this](){ viewPositions(); } } },
+     model_(make_shared<AspkaModel>()),
+     view_(make_unique<AspkaView>(model_)),
+     controller_(make_unique<AspkaController>(model_))
    {
 
    }
@@ -25,7 +30,6 @@ namespace aspka {
       cout << "ASPKA - A Small Position Keeping Application\n";
       cout << "Welcome to ASPKA v. 0.1\n";
       cout << "Written by: Marcus Johansson, Nov-2017\n";
-
       
       string user_input("");
       bool quit = false;
@@ -44,35 +48,22 @@ namespace aspka {
          else {
             cout << "The command was not understood. Try 'help'!\n";
          }
-
-         
       }
-      
 
       return 0;
    }
 
    void AspkaApp::displayHelp() {
       cout << "Command   Argument       Description\n";
-      //cout << "\n";
       cout << "help                     Displays this help information.\n";
-      //cout << "\n";
       cout << "register  instrument     Registers a new financial instrument.\n";
-      //cout << "\n";
       cout << "          trade          Registers a trade of an instrument.\n";
-      //cout << "\n";
       cout << "show      instrument     Shows all registered financial instruments.\n";
-      //cout << "\n";
       cout << "          trades         Shows all track records.\n";
-      //cout << "\n";
       cout << "          positions      Shows all currently open positions grouped.\n";
-      //cout << "\n";
       cout << "set       grouping       Sets which grouping to use for displaying positions.\n";
-      //cout << "\n";
       cout << "quit                     Quits this program.\n";
-      //cout << "\n";
       cout << "- - -\n";
-      //cout << "\n";
       cout << "view_positions           Shows all currently open positions. (FOR DEBUGGING)\n";
    }
 

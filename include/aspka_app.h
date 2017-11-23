@@ -18,6 +18,7 @@ namespace aspka {
    using std::vector;
    using std::function;
    using std::unique_ptr;
+   using std::shared_ptr;
 
    /** @brief 
     */
@@ -46,7 +47,7 @@ namespace aspka {
       using CmdMap = map<string, function<void()> >;
       CmdMap                       cmds_map_;
 
-      unique_ptr<AspkaModel>       model_;
+      shared_ptr<AspkaModel>       model_;
       unique_ptr<AspkaView>        view_;
       unique_ptr<AspkaController>  controller_;
 

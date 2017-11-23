@@ -1,13 +1,19 @@
 #ifndef ASPKA_CONTROLLER_H
 #define ASPKA_CONTROLLER_H
 
+#include "aspka_model.h"
+
+#include <memory>
+
 namespace aspka {
+
+   using std::shared_ptr;
    
    /** @brief 
     */
    class AspkaController {
    public:
-      AspkaController() = default;
+      AspkaController(shared_ptr<AspkaModel>);
       ~AspkaController() = default;
 
    private:
@@ -16,6 +22,7 @@ namespace aspka {
       AspkaController& operator=(const AspkaController&) = delete;
       AspkaController& operator=(AspkaController&&) = delete;
      
+      shared_ptr<AspkaModel> model_;
 
    };
 
