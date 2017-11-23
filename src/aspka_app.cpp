@@ -68,7 +68,25 @@ namespace aspka {
    }
 
    void AspkaApp::registerInstrument() {
-      cout << "register instrument!\n";
+      cout << "Registering of a new financial instrument:\n";
+      
+      cout << "Instrument name: ";
+      string name;
+      getline(cin, name);
+
+      cout << "Currency:        ";
+      string currency;
+      getline(cin, currency);
+
+      cout << "Issuer:          ";
+      string issuer;
+      getline(cin, issuer);
+
+      try {
+         contoller_->registerInstrument(name, currency, issuer);
+      } catch (...) {
+         
+      }
    }
 
    void AspkaApp::registerTrade() {

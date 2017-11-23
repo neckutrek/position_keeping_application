@@ -16,6 +16,10 @@ namespace aspka {
       AspkaController(shared_ptr<AspkaModel>);
       ~AspkaController() = default;
 
+      void registerInstrument(const string& name,
+                              const string& currency,
+                              const string& issuer);
+
    private:
       AspkaController(const AspkaController&) = delete;
       AspkaController(AspkaController&&) = delete;
