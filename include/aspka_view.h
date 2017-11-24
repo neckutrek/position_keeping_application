@@ -15,6 +15,8 @@ namespace aspka {
    public:
       AspkaView(shared_ptr<AspkaModel>);
       ~AspkaView() = default;
+      
+      void showInstruments();
 
    private:
       AspkaView(const AspkaView&) = delete;

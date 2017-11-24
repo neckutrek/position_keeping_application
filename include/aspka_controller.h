@@ -3,10 +3,12 @@
 
 #include "aspka_model.h"
 
+#include <string>
 #include <memory>
 
 namespace aspka {
 
+   using std::string;
    using std::shared_ptr;
    
    /** @brief 
@@ -19,6 +21,15 @@ namespace aspka {
       void registerInstrument(const string& name,
                               const string& currency,
                               const string& issuer);
+      
+      void registerTrade(const string& name,
+                         const string& portfolio, 
+                         const string& aquirer, 
+                         const string& counterparty,
+                         const string& marketplace, 
+                         double price, 
+                         int quantity, 
+                         bool buy);
 
    private:
       AspkaController(const AspkaController&) = delete;
