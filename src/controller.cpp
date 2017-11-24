@@ -1,28 +1,31 @@
-#include "aspka_controller.h"
+#include "controller.h"
 
 #include <iostream>
 
 namespace aspka {
 
-AspkaController::AspkaController
-(shared_ptr<AspkaModel> model) 
+Controller::Controller
+(shared_ptr<Model> model) 
 : model_(model)
 {
    
 }
 
-void AspkaController::registerInstrument
+void Controller::registerInstrument
 (const string& name, const string& currency, const string& issuer) 
 {
    model_->addInstrument(name, currency, issuer);
 }
 
-void AspkaController::registerTrade
+void Controller::registerTrade
 (const string& name, const string& portfolio,  const string& aquirer, 
  const string& counterparty, const string& marketplace, double price, 
  int quantity, bool buy)
 {
-   std::cout << "adding trade\n";
+   model_->addTrade(name, portfolio, aquirer, counterparty, marketplace,
+                    price, quantity, buy);
+
+
 }
 
 } // namespace aspka

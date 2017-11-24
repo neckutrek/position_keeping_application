@@ -1,7 +1,7 @@
-#include "aspka_app.h"
+#include "application.h"
 
 #include <iostream>
-#include "aspka_exception.h"
+#include "exception.h"
 
 namespace aspka {
 
@@ -10,7 +10,7 @@ using std::cout;
 using std::make_unique;
 using std::make_shared;
 
-AspkaApp::AspkaApp(int argc, char** argv) 
+Application::Application(int argc, char** argv) 
 : cmds_map_{
    {"help",                [this](){ displayHelp(); } },
    {"register instrument", [this](){ registerInstrument(); } },
@@ -20,14 +20,14 @@ AspkaApp::AspkaApp(int argc, char** argv)
    {"show positions",      [this](){ showPositions(); } },
    {"set grouping",        [this](){ setGrouping(); } },
    {"view_positions",      [this](){ viewPositions(); } } },
-   model_(make_shared<AspkaModel>()),
-   view_(make_unique<AspkaView>(model_)),
-   controller_(make_unique<AspkaController>(model_))
+   model_(make_shared<Model>()),
+   view_(make_unique<View>(model_)),
+   controller_(make_unique<Controller>(model_))
 {
 
 }
 
-int AspkaApp::run() {
+int Application::run() {
    cout << "ASPKA - A Small Position Keeping Application\n";
    cout << "Welcome to ASPKA v. 0.1\n";
    cout << "Written by: Marcus Johansson, Nov-2017\n";
@@ -60,7 +60,7 @@ int AspkaApp::run() {
    return 0;
 }
 
-void AspkaApp::displayHelp() {
+void Application::displayHelp() {
    cout << "Command   Argument       Description\n";
    cout << "help                     Displays this help information.\n";
    cout << "register  instrument     Registers a new financial instrument.\n";
@@ -74,7 +74,7 @@ void AspkaApp::displayHelp() {
    cout << "view_positions           Shows all currently open positions. (FOR DEBUGGING)\n";
 }
 
-void AspkaApp::registerInstrument() {
+void Application::registerInstrument() {
    cout << "Registering of a new financial instrument:\n";
    
    cout << "Instrument name: ";
@@ -92,12 +92,12 @@ void AspkaApp::registerInstrument() {
    try {
       controller_->registerInstrument(name, currency, issuer);
       cout << "\nSuccessfully registered new financial instrument!\n";
-   } catch (AspkaException& e) {
+   } catch (Exception& e) {
       cout << e.what() << "\n";
    }
 }
 
-void AspkaApp::registerTrade() {
+void Application::registerTrade() {
    cout << "Registering of a new trade:\n";
    
    string names = "";
@@ -160,7 +160,7 @@ void AspkaApp::registerTrade() {
    bool buy = false;
    success = false;
    while (!success) {
-      cout << "Buy/Sell:       ";
+      cout << "Buy/Sell:        ";
       string buy_str = "";
       getline(cin, buy_str);
       if (buy_str.compare("Buy") == 0) {
@@ -180,32 +180,36 @@ void AspkaApp::registerTrade() {
       controller_->registerTrade(name, portfolio, aquirer, counterparty, 
                                  marketplace, price, quantity, buy);
       cout << "\nSuccessfully executed trade order!\n";
-   } catch (AspkaException& e) {
+   } catch (Exception& e) {
       cout << e.what() << "\n";
    }
 }
 
-void AspkaApp::showInstruments() {
+void Application::showInstruments() {
    try {
       view_->showInstruments();
-   } catch (AspkaException& e) {
+   } catch (Exception& e) {
       cout << e.what() << "\n";
    }
 }
 
-void AspkaApp::showTrades() {
-   cout << "showTrades!\n";
+void Application::showTrades() {
+   try {
+      view_->showTrades();
+   } catch (Exception& e) {
+      cout << e.what() << "\n";
+   }
 }
 
-void AspkaApp::showPositions() {
+void Application::showPositions() {
    cout << "showPositions!\n";
 }
 
-void AspkaApp::setGrouping() {
+void Application::setGrouping() {
    cout << "set grouping!\n";
 }
 
-void AspkaApp::viewPositions() {
+void Application::viewPositions() {
    cout << "view positions!\n";
 }
 

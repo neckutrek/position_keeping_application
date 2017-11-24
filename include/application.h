@@ -1,9 +1,9 @@
-#ifndef ASPKA_APP_H
-#define ASPKA_APP_H
+#ifndef APPLICATION_H
+#define APPLICATION_H
 
-#include "aspka_model.h"
-#include "aspka_view.h"
-#include "aspka_controller.h"
+#include "model.h"
+#include "view.h"
+#include "controller.h"
 
 #include <map>
 #include <string>
@@ -22,18 +22,18 @@ namespace aspka {
 
    /** @brief 
     */
-   class AspkaApp {
+   class Application {
    public:
-      explicit AspkaApp(int argc, char** argv);
-      ~AspkaApp() = default;
+      explicit Application(int argc, char** argv);
+      ~Application() = default;
 
       int run();
 
    private:
-      AspkaApp(const AspkaApp&) = delete;
-      AspkaApp(AspkaApp&&) = delete;
-      AspkaApp& operator=(const AspkaApp&) = delete;
-      AspkaApp& operator=(AspkaApp&&) = delete;
+      Application(const Application&) = delete;
+      Application(Application&&) = delete;
+      Application& operator=(const Application&) = delete;
+      Application& operator=(Application&&) = delete;
 
       void displayHelp();
       void registerInstrument();
@@ -47,9 +47,9 @@ namespace aspka {
       using CmdMap = map<string, function<void()> >;
       CmdMap                       cmds_map_;
 
-      shared_ptr<AspkaModel>       model_;
-      unique_ptr<AspkaView>        view_;
-      unique_ptr<AspkaController>  controller_;
+      shared_ptr<Model>       model_;
+      unique_ptr<View>        view_;
+      unique_ptr<Controller>  controller_;
 
       vector<string>               arguments_;
 

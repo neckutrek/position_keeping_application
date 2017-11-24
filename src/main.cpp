@@ -1,5 +1,5 @@
-#include "aspka_app.h"
+#include "application.h"
 int main(int argc, char** argv) {
-   aspka::AspkaApp app(argc, argv);
+   aspka::Application app(argc, argv);
    return app.run();
 }

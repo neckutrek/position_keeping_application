@@ -8,7 +8,7 @@ include_directories("include")
 
 add_executable(${PROJECT_NAME} 
    src/main.cpp
-   src/aspka_app.cpp
-   src/aspka_model.cpp
-   src/aspka_view.cpp
-   src/aspka_controller.cpp)
+   src/application.cpp
+   src/model.cpp
+   src/view.cpp
+   src/controller.cpp)

@@ -1,7 +1,7 @@
-#ifndef ASPKA_CONTROLLER_H
-#define ASPKA_CONTROLLER_H
+#ifndef CONTROLLER_H
+#define CONTROLLER_H
 
-#include "aspka_model.h"
+#include "model.h"
 
 #include <string>
 #include <memory>
@@ -13,10 +13,10 @@ namespace aspka {
    
    /** @brief 
     */
-   class AspkaController {
+   class Controller {
    public:
-      AspkaController(shared_ptr<AspkaModel>);
-      ~AspkaController() = default;
+      Controller(shared_ptr<Model>);
+      ~Controller() = default;
 
       void registerInstrument(const string& name,
                               const string& currency,
@@ -32,12 +32,12 @@ namespace aspka {
                          bool buy);
 
    private:
-      AspkaController(const AspkaController&) = delete;
-      AspkaController(AspkaController&&) = delete;
-      AspkaController& operator=(const AspkaController&) = delete;
-      AspkaController& operator=(AspkaController&&) = delete;
+      Controller(const Controller&) = delete;
+      Controller(Controller&&) = delete;
+      Controller& operator=(const Controller&) = delete;
+      Controller& operator=(Controller&&) = delete;
      
-      shared_ptr<AspkaModel> model_;
+      shared_ptr<Model> model_;
 
    };
 
