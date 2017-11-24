@@ -10,6 +10,9 @@ Model::Model()
 {
    addInstrument("ABB", "SEK", "Asea Brown Boveri");
    addInstrument("LME", "SEK", "LM Ericsson");
+
+   addTrade("ABB", "Stock Portfolio", "Equity", "Deutche", "OMX", 14.95, 12, true);
+   addTrade("LME", "Stock Portfolio", "Equity", "Deutche", "OMX", 9.55, 15, true);
 }
 
 void Model::addInstrument
