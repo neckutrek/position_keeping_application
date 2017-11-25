@@ -70,15 +70,15 @@ void View::showTrades()
          string price = to_string(p->price_);
          string pq = price.substr(0, price.length()-4) + ", " + to_string(p->quantity_);
          cout << "| " << setw(10) << name << " | "
-              << setw(15) << p->portfolio_ << " | "
+              << setw(15) << model_->getPortfolioName(p->portfolio_id_) << " | "
               << setw(16) << pq << " | "
               << "2017-xx-xx " << " | "
               << setw(12) << (p->buy_ ? "Buy" : "Sell") << " |\n";
          cout << "|            | "
-              << setw(15) << p->aquirer_ << " | "
-              << setw(16) << p->counterparty_ << " | "
+              << setw(15) << model_->getAquirerName(p->aquirer_id_) << " | "
+              << setw(16) << model_->getCounterpartyName(p->counterparty_id_) << " | "
               << "10:43:22.15" << " | "
-              << setw(12) << p->marketplace_ << " |\n";
+              << setw(12) << model_->getMarketplaceName(p->marketplace_id_) << " |\n";
          cout << "|------------------------------------------------------------------------------|\n";
       }
    }

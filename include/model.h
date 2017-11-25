@@ -1,54 +1,17 @@
 #ifndef MODEL_H
 #define MODEL_H
 
+#include "primitives.h"
+
 #include <string>
 #include <unordered_map>
 #include <memory>
-#include <chrono>
 
 namespace aspka {
    
    using std::string;
    using std::unordered_map;
    using std::shared_ptr;
-   using time_point = std::chrono::time_point<std::chrono::high_resolution_clock>;
-   using clock = std::chrono::high_resolution_clock;
-   
-   /** @brief 
-    */
-   class Instrument {
-   public:
-      Instrument(const string& name, const string& currency, const string& issuer)
-      : name_(name), currency_(currency), issuer_(issuer) 
-      {}
-      
-      string name_;
-      string currency_;
-      string issuer_;
-   };
-   
-   /** @brief 
-    */
-   class Trade {
-   public:
-      Trade(int id, const string& portfolio, const string& aquirer, 
-            const string& counterparty, const string& marketplace, 
-            double price, int quantity, bool buy)
-      : instrument_id_(id), portfolio_(portfolio), aquirer_(aquirer), 
-        counterparty_(counterparty), marketplace_(marketplace), price_(price),
-        quantity_(quantity), buy_(buy), trade_time_(clock::now())
-      {}
-      
-      int          instrument_id_;
-      string       portfolio_;
-      string       aquirer_;
-      string       counterparty_;
-      string       marketplace_;
-      double       price_;
-      int          quantity_;
-      bool         buy_;
-      time_point   trade_time_;
-   };
    
    /** @brief 
     */
@@ -79,12 +42,28 @@ namespace aspka {
       inline int             getNTrades () { return n_trades_; }
 
       shared_ptr<Trade>      getTrade   (int id);
+
+      const string&          getPortfolioName(int id);
+      const string&          getAquirerName(int id);
+      const string&          getCounterpartyName(int id);
+      const string&          getMarketplaceName(int id);
       
    private:
       Model(const Model&) = delete;
       Model(Model&&) = delete;
       Model& operator=(const Model&) = delete;
       Model& operator=(Model&&) = delete;
+
+      using IntStringMap = unordered_map<int, string>;
+      IntStringMap         portfolios_;
+      int                  n_portfolios_;
+      IntStringMap         aquirers_;
+      int                  n_aquirers_;
+      IntStringMap         counterparties_;
+      int                  n_counterparties_;
+      IntStringMap         marketplaces_;
+      int                  n_marketplaces_;
+      int getIntStringMapId(const IntStringMap& map, const string& name);
       
       using InstrumentMap = unordered_map<int, shared_ptr<Instrument> >;
       InstrumentMap instrument_map_;
@@ -94,8 +73,17 @@ namespace aspka {
       using TradeMap = unordered_map<int, shared_ptr<Trade> >;
       TradeMap trade_map_;
       int n_trades_;
+
+      //using PositionMap = unordered_map<int, shared_ptr<Position> >;
+      //PositionMap position_map_;
+      //int n_positions_;
    };
    
 } // namespace aspka
 
 #endif //include guard
+
+
+
+
+
