@@ -47,6 +47,28 @@ namespace aspka {
       time_point   trade_time_;
    };
 
+   /** @brief
+    */
+   class Position {
+   public:
+      Position(int instrument_id, int portfolio_id, int aquirer_id, 
+               int counterparty_id, int marketplace_id, int quantity)
+      : instrument_id_(instrument_id), portfolio_id_(portfolio_id), 
+        aquirer_id_(aquirer_id), counterparty_id_(counterparty_id), 
+        marketplace_id_(marketplace_id), market_price_(.0), 
+        quantity_(quantity), price_trend_(.0)
+      {}
+
+      const int instrument_id_;
+      const int portfolio_id_;
+      const int aquirer_id_;
+      const int counterparty_id_;
+      const int marketplace_id_;
+      double market_price_;
+      int quantity_;
+      double price_trend_;
+   };
+
 } // namespace aspka
 
 #endif // include guard

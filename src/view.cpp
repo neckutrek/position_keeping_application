@@ -84,6 +84,34 @@ void View::showTrades()
    }
 }
 
+void View::showPositions()
+{
+   cout << "|------------------------------------------------------------------------------|\n";
+   cout << "| ALL CURRENT POSITIONS                                                        |\n";
+   cout << "|------------------------------------------------------------------------------|\n";
+   cout << "| Instrument | Portfolio     | Aquirer       | Counterparty   | Marketplace    |\n";
+   cout << "|            | Market Price  | Position      |                |                |\n";
+   cout << "|------------------------------------------------------------------------------|\n";
+
+   auto printPosition = [this](const Position& pos){
+      cout << "| " 
+           << setw(10) << model_->getInstrument(pos.instrument_id_)->name_ << " | "
+           << setw(13) << model_->getPortfolioName(pos.portfolio_id_) << " | "
+           << setw(13) << model_->getAquirerName(pos.aquirer_id_) << " | "
+           << setw(14) << model_->getCounterpartyName(pos.counterparty_id_) << " | "
+           << setw(14) << model_->getMarketplaceName(pos.marketplace_id_) << " |\n";
+      string price = to_string(pos.market_price_);
+      price = price.substr(0, price.length()-4);
+      cout << "|            | "
+           << setw(13) << price << " | "
+           << setw(13) << pos.quantity_ 
+           << " |                |                |\n";
+      cout << "|------------------------------------------------------------------------------|\n";
+   };
+
+   model_->applyLambdaOnAllPositions(printPosition);
+}
+
 } // namespace aspka
 
 

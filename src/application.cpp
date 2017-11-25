@@ -210,7 +210,11 @@ void Application::setGrouping() {
 }
 
 void Application::viewPositions() {
-   cout << "view positions!\n";
+   try {
+      view_->showPositions();
+   } catch (Exception& e) {
+      cout << e.what() << "\n";
+   }
 }
 
 } // namespace aspka

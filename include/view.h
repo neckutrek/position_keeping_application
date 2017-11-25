@@ -20,6 +20,8 @@ namespace aspka {
 
       void showTrades();
 
+      void showPositions();
+
    private:
       View(const View&) = delete;
       View(View&&) = delete;

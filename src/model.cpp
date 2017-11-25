@@ -12,13 +12,13 @@ using std::to_string;
 
 Model::Model() 
 : n_portfolios_(0), n_aquirers_(0), n_counterparties_(0), n_marketplaces_(0), 
-  n_instruments_(0), n_trades_(0)
+  n_instruments_(0), n_trades_(0), n_positions_(0)
 {
    addInstrument("ABB", "SEK", "Asea Brown Boveri");
    addInstrument("LME", "SEK", "LM Ericsson");
 
-   addTrade("ABB", "Stock Portfolio", "Equity", "Deutche", "OMX", 14.95, 12, true);
-   addTrade("LME", "Stock Portfolio", "Equity", "Deutche", "OMX", 9.55, 15, true);
+   addTrade("ABB", "Stock Portf.", "Equity", "Deutche", "OMX", 14.95, 12, true);
+   addTrade("LME", "Stock Portf.", "Equity", "Deutche", "OMX", 9.55, 15, true);
 }
 
 void Model::addInstrument
@@ -100,11 +100,13 @@ void Model::addTrade
       ++n_marketplaces_;
    }
 
-   trade_map_.emplace(n_trades_, make_shared<Trade>(
+   shared_ptr<Trade> trade = make_shared<Trade>(
       instrument_id, portfolio_id, aquirer_id, counterparty_id, marketplace_id, 
-      price, quantity, buy
-   ));
+      price, quantity, buy);
+   trade_map_.emplace(n_trades_, trade);
    ++n_trades_;
+
+   updatePosition(trade);
 }
 
 shared_ptr<Trade> Model::getTrade
@@ -153,6 +155,18 @@ const string& Model::getMarketplaceName
    }
 }
 
+void Model::applyLambdaOnAllPositions
+(const function<void(const Position&)>& fun)
+{
+   PositionMap::const_iterator it = position_map_.cbegin();
+   while (it != position_map_.cend()) {
+      if (it->second != nullptr) {
+         fun(*(it->second));
+      }
+      ++it;
+   }
+}
+
 
 
 
@@ -185,6 +199,44 @@ int Model::getIntStringMapId
       ++it;
    }
    return retval;
+}
+
+int Model::getPositionHashKey
+(int instrument_id, int portfolio_id_, int aquirer_id, int counterparty_id, 
+ int marketplace_id)
+{
+   // only place for 42 different marketplaces on 32-bit systems
+   return instrument_id +
+          100*portfolio_id_ +
+          10000*aquirer_id +
+          1000000*counterparty_id +
+          100000000*marketplace_id; 
+}
+
+void Model::updatePosition
+(shared_ptr<Trade> trade)
+{
+   int hash_key = getPositionHashKey(
+      trade->instrument_id_, trade->portfolio_id_, trade->aquirer_id_, 
+      trade->counterparty_id_, trade->marketplace_id_);
+
+   PositionMap::iterator it = position_map_.find(hash_key);
+   if (it == position_map_.end()) {
+      position_map_.emplace(hash_key, make_shared<Position>(
+         trade->instrument_id_, trade->portfolio_id_, trade->aquirer_id_, 
+         trade->counterparty_id_, trade->marketplace_id_, trade->quantity_));
+      ++n_positions_;
+   }
+   else {
+      shared_ptr<Position> p = it->second;
+      if (trade->buy_) {
+         p->quantity_ += trade->quantity_;
+      }
+      else {
+         p->quantity_ -= trade->quantity_;
+      }
+      
+   }
 }
 
 } // namespace aspka
