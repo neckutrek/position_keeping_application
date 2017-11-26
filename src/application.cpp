@@ -202,7 +202,11 @@ void Application::showTrades() {
 }
 
 void Application::showPositions() {
-   cout << "showPositions!\n";
+   try {
+      view_->showAggregatedPositions();
+   } catch (Exception& e) {
+      cout << e.what() << "\n";
+   }
 }
 
 void Application::setGrouping() {

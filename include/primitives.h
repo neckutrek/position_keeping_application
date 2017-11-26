@@ -52,11 +52,12 @@ namespace aspka {
    class Position {
    public:
       Position(int instrument_id, int portfolio_id, int aquirer_id, 
-               int counterparty_id, int marketplace_id, int quantity)
+               int counterparty_id, int marketplace_id, int quantity,
+               double market_price = .0, double price_trend = .0)
       : instrument_id_(instrument_id), portfolio_id_(portfolio_id), 
         aquirer_id_(aquirer_id), counterparty_id_(counterparty_id), 
-        marketplace_id_(marketplace_id), market_price_(.0), 
-        quantity_(quantity), price_trend_(.0)
+        marketplace_id_(marketplace_id), quantity_(quantity),
+        market_price_(market_price), price_trend_(price_trend)
       {}
 
       const int instrument_id_;
@@ -64,10 +65,12 @@ namespace aspka {
       const int aquirer_id_;
       const int counterparty_id_;
       const int marketplace_id_;
-      double market_price_;
       int quantity_;
+      double market_price_;
       double price_trend_;
    };
+
+   enum AggregateType : int {PORTFOLIO, AQUIRER, COUNTERPARTY, MARKETPLACE};
 
 } // namespace aspka
 

@@ -112,6 +112,67 @@ void View::showPositions()
    model_->applyLambdaOnAllPositions(printPosition);
 }
 
+void View::showAggregatedPositions()
+{
+   cout << "|------------------------------------------------------------------------------|\n";
+   cout << "| CURRENT POSITIONS   (Grouped on 'Portfolio').                                |\n";
+   cout << "|------------------------------------------------------------------------------|\n";
+   cout << "|   Instrument | Market Price | Curr | Pos | Market Value | Tot. Traded Amount |\n";
+   cout << "|------------------------------------------------------------------------------|\n";
+
+   int group_value = -1;
+
+   auto printPosition = [this, &group_value](const Position& pos, 
+                                             int new_group_value, 
+                                             AggregateType agg)
+   {
+      if (new_group_value > group_value) {
+         group_value = new_group_value;
+         switch (agg) {
+         case PORTFOLIO: {
+            cout << "| " << std::left << setw(76) 
+                 << model_->getPortfolioName(pos.portfolio_id_)
+                 << " |\n";
+            break;
+         }
+
+         case AQUIRER: {
+            break;
+         }
+
+         case COUNTERPARTY : {
+            break;
+         }
+
+         case MARKETPLACE: {
+            break;
+         }
+         }
+      }
+
+      string price = to_string(pos.market_price_);
+      price = price.substr(0, price.length()-4);
+
+      string value = to_string(pos.market_price_ * pos.quantity_);
+      value = value.substr(0, value.length()-4);
+
+      cout << "| " << std::right
+           << setw(12) << model_->getInstrument(pos.instrument_id_)->name_ << " | "
+           << setw(12) << price << " | "
+           << setw(4)  << model_->getInstrument(pos.instrument_id_)->currency_ << " | "
+           << setw(3)  << pos.quantity_ << " | "
+           << setw(12) << value << " | "
+           << setw(18) << "x" //<< " | "
+           //<< pos.portfolio_id_ << ", " << pos.aquirer_id_ << ", " 
+           //<< pos.counterparty_id_ << ", " << pos.marketplace_id_ << ", " 
+           <<" |\n";
+   };
+
+   model_->applyLambdaOnAggregatePositions(printPosition, PORTFOLIO);
+
+   cout << "|------------------------------------------------------------------------------|\n";
+}
+
 } // namespace aspka
 
 

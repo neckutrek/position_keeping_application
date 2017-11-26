@@ -22,6 +22,8 @@ namespace aspka {
 
       void showPositions();
 
+      void showAggregatedPositions();
+
    private:
       View(const View&) = delete;
       View(View&&) = delete;

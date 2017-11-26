@@ -12,13 +12,18 @@ using std::to_string;
 
 Model::Model() 
 : n_portfolios_(0), n_aquirers_(0), n_counterparties_(0), n_marketplaces_(0), 
-  n_instruments_(0), n_trades_(0), n_positions_(0)
+  n_instruments_(0), n_trades_(0), n_positions_(0), n_agg_positions_(0)
 {
    addInstrument("ABB", "SEK", "Asea Brown Boveri");
-   addInstrument("LME", "SEK", "LM Ericsson");
+   addInstrument("ERIC B", "SEK", "LM Ericsson B");
+   addInstrument("HOLM A", "SEK", "Holmen A");
+   addInstrument("FING B", "SEK", "Fingerprint Cards B");
 
    addTrade("ABB", "Stock Portf.", "Equity", "Deutche", "OMX", 14.95, 12, true);
-   addTrade("LME", "Stock Portf.", "Equity", "Deutche", "OMX", 9.55, 15, true);
+   addTrade("ABB", "Stock Portf.2", "Equity", "Deutche", "OMX", 14.95, 12, true);
+   addTrade("ABB", "Stock Portf.2", "Equity", "Deutche", "OMX", 9.95, 5, true);
+   addTrade("ERIC B", "Stock Portf.", "Equity", "Deutche", "OMX", 9.55, 15, true);
+   addTrade("ERIC B", "Stock Portf.2", "Equity", "Banque Francais", "OMX", 9.55, 15, true);
 }
 
 void Model::addInstrument
@@ -167,6 +172,43 @@ void Model::applyLambdaOnAllPositions
    }
 }
 
+void Model::applyLambdaOnAggregatePositions
+(const function<void(const Position&, int, AggregateType)>& fun, AggregateType agg)
+{
+   switch (agg) {
+   case PORTFOLIO: {
+      PositionGroup::const_iterator it = portfolio_group_.cbegin();
+      while (it != portfolio_group_.end()) {
+         shared_ptr<Position> pos = aggregate_positions_.at(*it);
+         fun(*pos, pos->portfolio_id_, agg);
+         ++it;
+      }
+      break;
+   }
+
+   case AQUIRER: {
+      break;
+   }
+
+   case COUNTERPARTY: {
+      break;
+   }
+
+   case MARKETPLACE: {
+      break;
+   }
+   }
+   /*
+   PositionMap::const_iterator it = aggregate_positions_.cbegin();
+   while (it != aggregate_positions_.cend()) {
+      if (it->second != nullptr) {
+         fun(*(it->second));
+      }
+      ++it;
+   }
+   */
+}
+
 
 
 
@@ -220,23 +262,105 @@ void Model::updatePosition
       trade->instrument_id_, trade->portfolio_id_, trade->aquirer_id_, 
       trade->counterparty_id_, trade->marketplace_id_);
 
+   shared_ptr<Position> position = nullptr;
    PositionMap::iterator it = position_map_.find(hash_key);
    if (it == position_map_.end()) {
-      position_map_.emplace(hash_key, make_shared<Position>(
+      position = make_shared<Position>(
          trade->instrument_id_, trade->portfolio_id_, trade->aquirer_id_, 
-         trade->counterparty_id_, trade->marketplace_id_, trade->quantity_));
+         trade->counterparty_id_, trade->marketplace_id_, trade->quantity_);
+      position_map_.emplace(hash_key, position);
       ++n_positions_;
    }
    else {
-      shared_ptr<Position> p = it->second;
+      position = it->second;
       if (trade->buy_) {
-         p->quantity_ += trade->quantity_;
+         position->quantity_ += trade->quantity_;
       }
       else {
-         p->quantity_ -= trade->quantity_;
+         position->quantity_ -= trade->quantity_;
       }
-      
    }
+
+   if (position != nullptr) {
+      updateAggregatePositions(hash_key, position, trade);
+   }
+}
+
+void Model::updateAggregatePositions
+(int hash_key, shared_ptr<Position> position, shared_ptr<Trade> trade)
+{
+   auto update = [this, position, trade](int key, AggregateType agg){
+      PositionMap::iterator it = aggregate_positions_.find(key);
+      if (it == aggregate_positions_.end()) {
+         switch (agg) {
+         case PORTFOLIO: {
+            aggregate_positions_.emplace(key, make_shared<Position>(
+               position->instrument_id_, position->portfolio_id_, -1, -1, -1, 
+               position->quantity_, position->market_price_, position->price_trend_));
+
+            PositionGroup::iterator it2 = portfolio_group_.begin();
+            bool found = false;
+            while (it2 != portfolio_group_.end() && !found) {
+               if (aggregate_positions_.at(*it2)->portfolio_id_ > position->portfolio_id_) {
+                  found = true;
+               }
+               else {
+                  ++it2;
+               }
+            }
+            portfolio_group_.insert(it2, key);
+            break;
+         }
+
+         case AQUIRER: {
+            aggregate_positions_.emplace(key, make_shared<Position>(
+               position->instrument_id_, -1, position->aquirer_id_, -1, -1, 
+               position->quantity_, position->market_price_, position->price_trend_));
+            break;
+         }
+
+         case COUNTERPARTY: {
+            aggregate_positions_.emplace(key, make_shared<Position>(
+               position->instrument_id_, -1, -1, position->counterparty_id_, -1,
+               position->quantity_, position->market_price_, position->price_trend_));
+            break;
+         }
+
+         case MARKETPLACE: {
+            aggregate_positions_.emplace(key, make_shared<Position>(
+               position->instrument_id_, -1, -1, -1, position->marketplace_id_,
+               position->quantity_, position->market_price_, position->price_trend_));
+            break;
+         }
+         }
+
+         ++n_agg_positions_;
+      }
+      else {
+         shared_ptr<Position> agg_pos = it->second;
+         if (agg_pos != nullptr) {
+            if (trade->buy_) agg_pos->quantity_ += trade->quantity_;
+            else             agg_pos->quantity_ -= trade->quantity_;
+         }
+      }
+   };
+
+   int portfolio_hash = getPositionHashKey(
+      position->instrument_id_, position->portfolio_id_, -1, -1, -1);
+
+   int aquirer_hash = getPositionHashKey(
+      position->instrument_id_, -1, position->aquirer_id_, -1, -1);
+
+   int counterparty_hash = getPositionHashKey(
+      position->instrument_id_, -1, -1, position->counterparty_id_, -1);
+
+   int marketplace_hash = getPositionHashKey(
+      position->instrument_id_, -1, -1, -1, position->marketplace_id_);
+
+   update(portfolio_hash, PORTFOLIO);
+   update(aquirer_hash, AQUIRER);
+   update(counterparty_hash, COUNTERPARTY);
+   update(marketplace_hash, MARKETPLACE);
 }
 
 } // namespace aspka

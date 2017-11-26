@@ -5,6 +5,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <list>
 #include <memory>
 #include <functional>
 
@@ -12,6 +13,7 @@ namespace aspka {
    
    using std::string;
    using std::unordered_map;
+   using std::list;
    using std::shared_ptr;
    using std::function;
    
@@ -51,6 +53,10 @@ namespace aspka {
       const string&          getMarketplaceName(int id);
 
       void applyLambdaOnAllPositions(const function<void(const Position&)>& fun);
+
+      void applyLambdaOnAggregatePositions(
+        const function<void(const Position&, int, AggregateType)>& fun,
+        AggregateType agg);
       
    private:
       Model(const Model&) = delete;
@@ -87,6 +93,18 @@ namespace aspka {
                              int counterparty_id,
                              int marketplace_id);
       void updatePosition(shared_ptr<Trade> trade);
+
+      PositionMap aggregate_positions_;
+      int n_agg_positions_;
+      void updateAggregatePositions(int hash_key, shared_ptr<Position> position,
+                                    shared_ptr<Trade> trade);
+
+      using PositionGroup = list<int>;
+      PositionGroup portfolio_group_;
+      PositionGroup aquirer_group_;
+      PositionGroup counterparty_group_;
+      PositionGroup marketplace_group_;
+
    };
    
 } // namespace aspka
