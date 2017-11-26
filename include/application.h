@@ -4,6 +4,7 @@
 #include "model.h"
 #include "view.h"
 #include "controller.h"
+#include "market_simulator.h"
 
 #include <map>
 #include <string>
@@ -51,7 +52,9 @@ namespace aspka {
       unique_ptr<View>        view_;
       unique_ptr<Controller>  controller_;
 
-      vector<string>               arguments_;
+      vector<string>          arguments_;
+
+      MarketSimulator         market_simulator_;
 
    };
 

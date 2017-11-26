@@ -104,7 +104,6 @@ namespace aspka {
       PositionGroup aquirer_group_;
       PositionGroup counterparty_group_;
       PositionGroup marketplace_group_;
-
    };
    
 } // namespace aspka
