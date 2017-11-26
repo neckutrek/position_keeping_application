@@ -187,26 +187,35 @@ void Model::applyLambdaOnAggregatePositions
    }
 
    case AQUIRER: {
+      PositionGroup::const_iterator it = aquirer_group_.cbegin();
+      while (it != aquirer_group_.end()) {
+         shared_ptr<Position> pos = aggregate_positions_.at(*it);
+         fun(*pos, pos->aquirer_id_, agg);
+         ++it;
+      }
       break;
    }
 
    case COUNTERPARTY: {
+      PositionGroup::const_iterator it = counterparty_group_.cbegin();
+      while (it != counterparty_group_.end()) {
+         shared_ptr<Position> pos = aggregate_positions_.at(*it);
+         fun(*pos, pos->counterparty_id_, agg);
+         ++it;
+      }
       break;
    }
 
    case MARKETPLACE: {
+      PositionGroup::const_iterator it = marketplace_group_.cbegin();
+      while (it != marketplace_group_.end()) {
+         shared_ptr<Position> pos = aggregate_positions_.at(*it);
+         fun(*pos, pos->marketplace_id_, agg);
+         ++it;
+      }
       break;
    }
    }
-   /*
-   PositionMap::const_iterator it = aggregate_positions_.cbegin();
-   while (it != aggregate_positions_.cend()) {
-      if (it->second != nullptr) {
-         fun(*(it->second));
-      }
-      ++it;
-   }
-   */
 }
 
 
@@ -316,6 +325,18 @@ void Model::updateAggregatePositions
             aggregate_positions_.emplace(key, make_shared<Position>(
                position->instrument_id_, -1, position->aquirer_id_, -1, -1, 
                position->quantity_, position->market_price_, position->price_trend_));
+
+            PositionGroup::iterator it2 = aquirer_group_.begin();
+            bool found = false;
+            while (it2 != aquirer_group_.end() && !found) {
+               if (aggregate_positions_.at(*it2)->aquirer_id_ > position->aquirer_id_) {
+                  found = true;
+               }
+               else {
+                  ++it2;
+               }
+            }
+            aquirer_group_.insert(it2, key);
             break;
          }
 
@@ -323,6 +344,18 @@ void Model::updateAggregatePositions
             aggregate_positions_.emplace(key, make_shared<Position>(
                position->instrument_id_, -1, -1, position->counterparty_id_, -1,
                position->quantity_, position->market_price_, position->price_trend_));
+
+            PositionGroup::iterator it2 = counterparty_group_.begin();
+            bool found = false;
+            while (it2 != counterparty_group_.end() && !found) {
+               if (aggregate_positions_.at(*it2)->counterparty_id_ > position->counterparty_id_) {
+                  found = true;
+               }
+               else {
+                  ++it2;
+               }
+            }
+            counterparty_group_.insert(it2, key);
             break;
          }
 
@@ -330,6 +363,18 @@ void Model::updateAggregatePositions
             aggregate_positions_.emplace(key, make_shared<Position>(
                position->instrument_id_, -1, -1, -1, position->marketplace_id_,
                position->quantity_, position->market_price_, position->price_trend_));
+
+            PositionGroup::iterator it2 = marketplace_group_.begin();
+            bool found = false;
+            while (it2 != marketplace_group_.end() && !found) {
+               if (aggregate_positions_.at(*it2)->marketplace_id_ > position->marketplace_id_) {
+                  found = true;
+               }
+               else {
+                  ++it2;
+               }
+            }
+            marketplace_group_.insert(it2, key);
             break;
          }
          }

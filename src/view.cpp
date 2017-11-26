@@ -137,14 +137,23 @@ void View::showAggregatedPositions()
          }
 
          case AQUIRER: {
+            cout << "| " << std::left << setw(76) 
+                 << model_->getAquirerName(pos.aquirer_id_)
+                 << " |\n";
             break;
          }
 
          case COUNTERPARTY : {
+            cout << "| " << std::left << setw(76) 
+                 << model_->getCounterpartyName(pos.counterparty_id_)
+                 << " |\n";
             break;
          }
 
          case MARKETPLACE: {
+            cout << "| " << std::left << setw(76) 
+                 << model_->getMarketplaceName(pos.marketplace_id_)
+                 << " |\n";
             break;
          }
          }
@@ -162,14 +171,10 @@ void View::showAggregatedPositions()
            << setw(4)  << model_->getInstrument(pos.instrument_id_)->currency_ << " | "
            << setw(3)  << pos.quantity_ << " | "
            << setw(12) << value << " | "
-           << setw(18) << "x" //<< " | "
-           //<< pos.portfolio_id_ << ", " << pos.aquirer_id_ << ", " 
-           //<< pos.counterparty_id_ << ", " << pos.marketplace_id_ << ", " 
-           <<" |\n";
+           << setw(18) << "x" <<" |\n";
    };
 
-   model_->applyLambdaOnAggregatePositions(printPosition, PORTFOLIO);
-
+   model_->applyLambdaOnAggregatePositions(printPosition, current_grouping_);
    cout << "|------------------------------------------------------------------------------|\n";
 }
 

@@ -24,6 +24,9 @@ namespace aspka {
 
       void showAggregatedPositions();
 
+      inline void setGrouping(AggregateType agg) 
+      { current_grouping_ = agg; }
+
    private:
       View(const View&) = delete;
       View(View&&) = delete;
@@ -32,6 +35,7 @@ namespace aspka {
      
       shared_ptr<Model> model_;
 
+      AggregateType current_grouping_;
    };
 
 } // namespace aspka

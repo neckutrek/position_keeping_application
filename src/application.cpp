@@ -210,7 +210,28 @@ void Application::showPositions() {
 }
 
 void Application::setGrouping() {
-   cout << "set grouping!\n";
+   cout << "Available groupings: (1) Portfolio, (2) Aquirer, (3) Counterparty, (4) Marketplace\n";
+
+   int grouping = 0;
+   bool success = false;
+   while (!success) {
+      try {
+         cout << "Set new grouping: ";
+         string input = "";
+         getline(cin, input);
+         grouping = std::stoi(input);
+         if (grouping < 1 || grouping > 4) {
+            cout << "Expect integer between 1 and 4, try again!!\n";
+         }
+         else {
+            success = true;
+         }
+      } catch (std::invalid_argument& e) {
+         cout << "Expect integer between 1 and 4, try again!!\n";
+      }
+   }
+
+   view_->setGrouping(static_cast<AggregateType>(grouping));
 }
 
 void Application::viewPositions() {
