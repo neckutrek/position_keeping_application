@@ -15,7 +15,7 @@ Model::Model()
   n_instruments_(0), n_trades_(0), n_positions_(0), n_agg_positions_(0)
 {
    addInstrument("ABB", "SEK", "Asea Brown Boveri");
-   addInstrument("ERIC B", "SEK", "LM Ericsson B");
+   addInstrument("ERIC B", "SEK", "Ericsson B");
    addInstrument("HOLM A", "SEK", "Holmen A");
    addInstrument("FING B", "SEK", "Fingerprint Cards B");
 
@@ -288,6 +288,7 @@ void Model::updatePosition
       else {
          position->quantity_ -= trade->quantity_;
       }
+      position->total_traded_amount_ += trade->quantity_;
    }
 
    if (position != nullptr) {
@@ -305,7 +306,7 @@ void Model::updateAggregatePositions
          case PORTFOLIO: {
             aggregate_positions_.emplace(key, make_shared<Position>(
                position->instrument_id_, position->portfolio_id_, -1, -1, -1, 
-               position->quantity_, position->market_price_, position->price_trend_));
+               position->quantity_));//, position->market_price_, position->price_trend_));
 
             PositionGroup::iterator it2 = portfolio_group_.begin();
             bool found = false;
@@ -324,7 +325,7 @@ void Model::updateAggregatePositions
          case AQUIRER: {
             aggregate_positions_.emplace(key, make_shared<Position>(
                position->instrument_id_, -1, position->aquirer_id_, -1, -1, 
-               position->quantity_, position->market_price_, position->price_trend_));
+               position->quantity_));//, position->market_price_, position->price_trend_));
 
             PositionGroup::iterator it2 = aquirer_group_.begin();
             bool found = false;
@@ -343,7 +344,7 @@ void Model::updateAggregatePositions
          case COUNTERPARTY: {
             aggregate_positions_.emplace(key, make_shared<Position>(
                position->instrument_id_, -1, -1, position->counterparty_id_, -1,
-               position->quantity_, position->market_price_, position->price_trend_));
+               position->quantity_));//, position->market_price_, position->price_trend_));
 
             PositionGroup::iterator it2 = counterparty_group_.begin();
             bool found = false;
@@ -362,7 +363,7 @@ void Model::updateAggregatePositions
          case MARKETPLACE: {
             aggregate_positions_.emplace(key, make_shared<Position>(
                position->instrument_id_, -1, -1, -1, position->marketplace_id_,
-               position->quantity_, position->market_price_, position->price_trend_));
+               position->quantity_));//, position->market_price_, position->price_trend_));
 
             PositionGroup::iterator it2 = marketplace_group_.begin();
             bool found = false;
@@ -384,6 +385,7 @@ void Model::updateAggregatePositions
       else {
          shared_ptr<Position> agg_pos = it->second;
          if (agg_pos != nullptr) {
+            agg_pos->total_traded_amount_ += trade->quantity_;
             if (trade->buy_) agg_pos->quantity_ += trade->quantity_;
             else             agg_pos->quantity_ -= trade->quantity_;
          }

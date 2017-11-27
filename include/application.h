@@ -54,7 +54,7 @@ namespace aspka {
 
       vector<string>          arguments_;
 
-      MarketSimulator         market_simulator_;
+      //MarketSimulator         market_simulator_;
 
    };
 

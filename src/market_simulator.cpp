@@ -14,7 +14,7 @@ MarketSimulator::MarketSimulator
 
 void MarketSimulator::start() 
 {
-   market_simulator_thread_.detach();
+   //market_simulator_thread_.detach(); 
 }
 
 void MarketSimulator::run()

@@ -15,12 +15,13 @@ namespace aspka {
    class Instrument {
    public:
       Instrument(const string& name, const string& currency, const string& issuer)
-      : name_(name), currency_(currency), issuer_(issuer) 
+      : name_(name), currency_(currency), issuer_(issuer), market_price_(13.0)
       {}
       
       string name_;
       string currency_;
       string issuer_;
+      double market_price_;
    };
    
    /** @brief 
@@ -57,7 +58,8 @@ namespace aspka {
       : instrument_id_(instrument_id), portfolio_id_(portfolio_id), 
         aquirer_id_(aquirer_id), counterparty_id_(counterparty_id), 
         marketplace_id_(marketplace_id), quantity_(quantity),
-        market_price_(market_price), price_trend_(price_trend)
+        total_traded_amount_(quantity)//,
+        //market_price_(market_price), price_trend_(price_trend)
       {}
 
       const int instrument_id_;
@@ -66,8 +68,9 @@ namespace aspka {
       const int counterparty_id_;
       const int marketplace_id_;
       int quantity_;
-      double market_price_;
-      double price_trend_;
+      int total_traded_amount_;
+      //double market_price_;
+      //double price_trend_;
    };
 
    enum AggregateType : int {PORTFOLIO, AQUIRER, COUNTERPARTY, MARKETPLACE};

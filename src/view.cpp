@@ -11,29 +11,27 @@ using std::to_string;
 
 View::View(shared_ptr<Model> model) 
 : model_(model)
-{
-   std::cout << "view\n";
-}
+{}
 
 void View::showInstruments() {
    cout << "|------------------------------------------------------------------------------|\n";
    cout << "| REGISTERED FINANCIAL INSTRUMENTS                                             |\n";
    cout << "|------------------------------------------------------------------------------|\n";
-   cout << "| Name | Currency | Issuer                                                     |\n";
+   cout << "| Name     | Currency | Market Price | Issuer                                  |\n";
    cout << "|------------------------------------------------------------------------------|\n";
    
    auto printInfo = [](const string& name,
                        const string& currency,
-                       const string& issuer) {
-      cout << "|  " << name << " |      " << currency << " | ";
-      if (issuer.length() > 59) cout << issuer.substr(0, 59);
-      else {
-         cout << issuer;
-         for (unsigned int i=0; i<59-issuer.length(); ++i) {
-            cout << " ";
-         }
-      }
-      cout << "|\n";
+                       double price,
+                       const string& issuer) 
+   {
+      string price_str = to_string(price);
+      price_str = price_str.substr(0, price_str.length()-4);
+      cout << "| " << setw(8) << name 
+           << " | " << setw(8) << currency 
+           << " | " << setw(12) << price_str
+           << " | " << setw(39) << std::left << issuer.substr(0, 39)
+           << std::right << " |\n";
    };
    
    int n_instruments = model_->getNInstruments();
@@ -41,7 +39,7 @@ void View::showInstruments() {
    for (int i=0; i<n_instruments; ++i) {
       p = model_->getInstrument(i);
       if (p != nullptr) {
-         printInfo(p->name_, p->currency_, p->issuer_);
+         printInfo(p->name_, p->currency_, p->market_price_, p->issuer_);
       }
    }
    
@@ -94,13 +92,15 @@ void View::showPositions()
    cout << "|------------------------------------------------------------------------------|\n";
 
    auto printPosition = [this](const Position& pos){
+      shared_ptr<Instrument> instrument = model_->getInstrument(pos.instrument_id_);
       cout << "| " 
-           << setw(10) << model_->getInstrument(pos.instrument_id_)->name_ << " | "
+           << setw(10) << instrument->name_ << " | "
            << setw(13) << model_->getPortfolioName(pos.portfolio_id_) << " | "
            << setw(13) << model_->getAquirerName(pos.aquirer_id_) << " | "
            << setw(14) << model_->getCounterpartyName(pos.counterparty_id_) << " | "
            << setw(14) << model_->getMarketplaceName(pos.marketplace_id_) << " |\n";
-      string price = to_string(pos.market_price_);
+
+      string price = to_string(instrument->market_price_);
       price = price.substr(0, price.length()-4);
       cout << "|            | "
            << setw(13) << price << " | "
@@ -159,19 +159,22 @@ void View::showAggregatedPositions()
          }
       }
 
-      string price = to_string(pos.market_price_);
+      shared_ptr<Instrument> instrument = 
+         model_->getInstrument(pos.instrument_id_);
+
+      string price = to_string(instrument->market_price_);
       price = price.substr(0, price.length()-4);
 
-      string value = to_string(pos.market_price_ * pos.quantity_);
+      string value = to_string(instrument->market_price_ * pos.quantity_);
       value = value.substr(0, value.length()-4);
 
       cout << "| " << std::right
-           << setw(12) << model_->getInstrument(pos.instrument_id_)->name_ << " | "
+           << setw(12) << instrument->name_ << " | "
            << setw(12) << price << " | "
-           << setw(4)  << model_->getInstrument(pos.instrument_id_)->currency_ << " | "
+           << setw(4)  << instrument->currency_ << " | "
            << setw(3)  << pos.quantity_ << " | "
            << setw(12) << value << " | "
-           << setw(18) << "x" <<" |\n";
+           << setw(18) << pos.total_traded_amount_ <<" |\n";
    };
 
    model_->applyLambdaOnAggregatePositions(printPosition, current_grouping_);

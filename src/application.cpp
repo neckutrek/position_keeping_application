@@ -23,18 +23,23 @@ Application::Application(int argc, char** argv)
    {"view_positions",      [this](){ viewPositions(); } } },
    model_(make_shared<Model>()),
    view_(make_unique<View>(model_)),
-   controller_(make_unique<Controller>(model_)),
-   market_simulator_(model_)
+   controller_(make_unique<Controller>(model_))//,
+   //market_simulator_(model_)
 {
 
 }
 
 int Application::run() {
-   cout << "ASPKA - A Small Position Keeping Application\n";
-   cout << "Welcome to ASPKA v. 0.1\n";
-   cout << "Written by: Marcus Johansson, Nov-2017\n";
+   cout << "********************************************************************************\n";
+   cout << "* ASPKA - A Small Position Keeping Application                                 *\n";
+   cout << "* Welcome to ASPKA v. 0.1                                                      *\n";
+   cout << "* Written by: Marcus Johansson, Nov-2017                                       *\n";
+   cout << "*                                                                              *\n";
+   cout << "* Type 'help' for usage instructions!                                          *\n";
+   cout << "********************************************************************************\n";
+   cout << "\n";
 
-   market_simulator_.start();
+   //market_simulator_.start();
    
    string user_input("");
    bool quit = false;
