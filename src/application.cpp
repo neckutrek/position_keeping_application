@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <chrono>
+#include <cstdlib>
+#include <ctime>
 
 namespace aspka {
 
@@ -10,6 +12,8 @@ using std::cin;
 using std::cout;
 using std::make_unique;
 using std::make_shared;
+using std::srand;
+using std::time;
 
 Application::Application(int argc, char** argv) 
 : cmds_map_{
@@ -40,6 +44,7 @@ int Application::run() {
    cout << "\n";
 
    //market_simulator_.start();
+   srand(time(NULL));
    
    string user_input("");
    bool quit = false;
@@ -240,7 +245,7 @@ void Application::setGrouping() {
       }
    }
 
-   view_->setGrouping(static_cast<AggregateType>(grouping));
+   view_->setGrouping(static_cast<AggregateType>(grouping-1));
 }
 
 void Application::viewPositions() {

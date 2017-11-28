@@ -125,8 +125,18 @@ void View::showPositions()
 
 void View::showAggregatedPositions()
 {
+   string grouping = "";
+   switch (current_grouping_) {
+   case PORTFOLIO: { grouping = "'Portfolio')"; break; }
+   case AQUIRER: { grouping = "'Aquirer')"; break; }
+   case COUNTERPARTY: { grouping = "'Counterparty')"; break; }
+   case MARKETPLACE: { grouping = "'Marketplace')"; break; }
+   }
+   
    cout << "|------------------------------------------------------------------------------|\n";
-   cout << "| CURRENT POSITIONS   (Grouped on 'Portfolio').                                |\n";
+   cout << "| CURRENT POSITIONS   (Grouped on "
+        << setw(15) << std::left << grouping << std::right
+        << "                              |\n";
    cout << "|------------------------------------------------------------------------------|\n";
    cout << "|   Instrument | Market Price | Curr | Pos | Market Value | Tot. Traded Amount |\n";
    cout << "|------------------------------------------------------------------------------|\n";

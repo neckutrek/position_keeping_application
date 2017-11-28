@@ -3,20 +3,25 @@
 
 #include <string>
 #include <chrono>
+#include <cstdlib>
+#include <ctime>
 
 namespace aspka {
    
    using std::string;
    using time_point = std::chrono::time_point<std::chrono::high_resolution_clock>;
    using clock = std::chrono::high_resolution_clock;
+   using std::rand;
 
    /** @brief 
     */
    class Instrument {
    public:
       Instrument(const string& name, const string& currency, const string& issuer)
-      : name_(name), currency_(currency), issuer_(issuer), market_price_(13.0)
-      {}
+      : name_(name), currency_(currency), issuer_(issuer), market_price_(.0)
+      {
+         market_price_ = static_cast<double>(1000 + rand()%1000) / 100.0;
+      }
       
       string name_;
       string currency_;
