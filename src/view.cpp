@@ -2,12 +2,16 @@
 
 #include <iostream>
 #include <iomanip>
+#include <ctime>
 
 namespace aspka {
    
 using std::cout;
 using std::setw;
 using std::to_string;
+using std::time_t;
+using std::strftime;
+//using std::chrono::system_clock::to_time_t;
 
 View::View(shared_ptr<Model> model) 
 : model_(model)
@@ -52,7 +56,7 @@ void View::showTrades()
    cout << "| TRACK RECORD                                                                 |\n";
    cout << "|------------------------------------------------------------------------------|\n";
    cout << "| Instrument | Portfolio       | Price, Quantity  | Trade Time  | Buy/Sell     |\n";
-   cout << "|            | Aquirer         | Counterparty     |             | Marketplace  |\n";
+   cout << "|            | Aquirer         | Counterparty     | (UTC)       | Marketplace  |\n";
    cout << "|------------------------------------------------------------------------------|\n";
    
    int n_trades = model_->getNTrades();
@@ -65,18 +69,25 @@ void View::showTrades()
          if (instrument != nullptr) {
             name = instrument->name_;
          }
+         
          string price = to_string(p->price_);
          string pq = price.substr(0, price.length()-4) + ", " + to_string(p->quantity_);
+         string date = "";
+         string time = "";
+         getDateAndTimeFromTimePoint(p->trade_time_, date, time);
+         
          cout << "| " << setw(10) << name << " | "
               << setw(15) << model_->getPortfolioName(p->portfolio_id_) << " | "
               << setw(16) << pq << " | "
-              << "2017-xx-xx " << " | "
+              << setw(11) << date << " | "
               << setw(12) << (p->buy_ ? "Buy" : "Sell") << " |\n";
+              
          cout << "|            | "
               << setw(15) << model_->getAquirerName(p->aquirer_id_) << " | "
               << setw(16) << model_->getCounterpartyName(p->counterparty_id_) << " | "
-              << "10:43:22.15" << " | "
+              << setw(11) << time << " | "
               << setw(12) << model_->getMarketplaceName(p->marketplace_id_) << " |\n";
+              
          cout << "|------------------------------------------------------------------------------|\n";
       }
    }
@@ -179,6 +190,32 @@ void View::showAggregatedPositions()
 
    model_->applyLambdaOnAggregatePositions(printPosition, current_grouping_);
    cout << "|------------------------------------------------------------------------------|\n";
+}
+
+
+
+
+
+
+
+void View::getDateAndTimeFromTimePoint(const time_point& tp, string& date, string& time)
+{
+   date = "";
+   time = "";
+   
+   auto epoch = tp.time_since_epoch();
+   auto secs = std::chrono::duration_cast<std::chrono::seconds>(epoch);
+   long duration = secs.count();
+   time_t t = duration;
+   char buffer[11];
+   strftime(buffer, 11, "%Y-%m-%d", gmtime(&t));
+   date = string(buffer);
+   
+   char buffer2[11];
+   strftime(buffer2, 11, "%H:%M:%S", gmtime(&t));
+   time = string(buffer2);
+   auto msecs = std::chrono::duration_cast<std::chrono::seconds>(epoch);
+   time += "." + to_string(msecs.count() & 1000).substr(0, 2);
 }
 
 } // namespace aspka

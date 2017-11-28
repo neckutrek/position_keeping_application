@@ -32,6 +32,8 @@ namespace aspka {
       View(View&&) = delete;
       View& operator=(const View&) = delete;
       View& operator=(View&&) = delete;
+      
+      void getDateAndTimeFromTimePoint(const time_point& tp, string&, string&);
      
       shared_ptr<Model> model_;
 

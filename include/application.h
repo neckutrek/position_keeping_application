@@ -4,7 +4,7 @@
 #include "model.h"
 #include "view.h"
 #include "controller.h"
-#include "market_simulator.h"
+//#include "market_simulator.h"
 
 #include <map>
 #include <string>

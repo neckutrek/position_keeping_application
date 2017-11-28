@@ -11,5 +11,5 @@ add_executable(${PROJECT_NAME}
    src/application.cpp
    src/model.cpp
    src/view.cpp
-   src/controller.cpp
-   src/market_simulator.cpp)
+   src/controller.cpp)
+#   src/market_simulator.cpp)
